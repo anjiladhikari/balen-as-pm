@@ -1,31 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Nepal flag - unique double-pennant shape -->
-  <defs>
-    <clipPath id="flag">
-      <polygon points="0,0 300,150 60,150 300,330 0,512"/>
-    </clipPath>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 726 885">
+  <!-- Nepal Flag - accurate proportions per constitution -->
   <!-- Blue border -->
-  <polygon points="0,0 320,160 70,160 320,345 0,512" fill="#003893"/>
-  <!-- Red body -->
-  <polygon points="15,15 290,150 75,150 290,330 15,497" fill="#DC143C"/>
-  <!-- Moon (upper triangle) -->
-  <circle cx="130" cy="85" r="35" fill="white"/>
-  <circle cx="130" cy="75" r="30" fill="#DC143C"/>
-  <!-- Crescent rays -->
-  <polygon points="130,50 125,30 135,30" fill="white"/>
-  <polygon points="105,55 95,38 108,45" fill="white"/>
-  <polygon points="155,55 165,38 152,45" fill="white"/>
-  <polygon points="95,75 78,68 88,78" fill="white"/>
-  <polygon points="165,75 182,68 172,78" fill="white"/>
-  <!-- Sun (lower triangle) - 12 pointed star -->
-  <circle cx="150" cy="280" r="28" fill="white"/>
-  <polygon points="150,245 145,265 155,265" fill="white"/>
-  <polygon points="150,315 145,295 155,295" fill="white"/>
-  <polygon points="115,280 135,275 135,285" fill="white"/>
-  <polygon points="185,280 165,275 165,285" fill="white"/>
-  <polygon points="125,255 138,268 132,272" fill="white"/>
-  <polygon points="175,305 162,292 168,288" fill="white"/>
-  <polygon points="175,255 162,268 168,272" fill="white"/>
-  <polygon points="125,305 138,292 132,288" fill="white"/>
+  <path d="M0,0 L723,362 L80,362 L723,724 L0,885 Z" fill="#003594"/>
+  <!-- Red fill - upper pennant -->
+  <path d="M18,25 L690,345 L95,345 Z" fill="#DC143C"/>
+  <!-- Red fill - lower pennant -->
+  <path d="M18,345 L690,700 L18,860 Z" fill="#DC143C"/>
+  
+  <!-- Moon (upper pennant) -->
+  <!-- Crescent -->
+  <circle cx="280" cy="210" r="70" fill="#FFFFFF"/>
+  <circle cx="280" cy="190" r="58" fill="#DC143C"/>
+  <!-- Moon rays (8 triangular rays) -->
+  <g fill="#FFFFFF">
+    <polygon points="280,110 273,142 287,142"/>
+    <polygon points="280,110 260,138 300,138" opacity="0"/>
+    <polygon points="210,140 235,158 228,170"/>
+    <polygon points="350,140 325,158 332,170"/>
+    <polygon points="195,195 225,195 218,210"/>
+    <polygon points="365,195 335,195 342,210"/>
+    <polygon points="210,250 232,235 238,248"/>
+    <polygon points="350,250 328,235 322,248"/>
+  </g>
+  
+  <!-- Sun (lower pennant) - 12-pointed star -->
+  <circle cx="300" cy="560" r="55" fill="#FFFFFF"/>
+  <!-- 12 triangular rays -->
+  <g fill="#FFFFFF">
+    <polygon points="300,480 293,508 307,508"/>
+    <polygon points="300,640 293,612 307,612"/>
+    <polygon points="220,560 248,553 248,567"/>
+    <polygon points="380,560 352,553 352,567"/>
+    <polygon points="240,500 258,520 250,528"/>
+    <polygon points="360,620 342,600 350,592"/>
+    <polygon points="360,500 342,520 350,528"/>
+    <polygon points="240,620 258,600 250,592"/>
+    <polygon points="234,540 255,535 252,548"/>
+    <polygon points="366,580 345,575 348,562"/>
+    <polygon points="234,580 255,575 252,562"/>
+    <polygon points="366,540 345,535 348,548"/>
+  </g>
 </svg>

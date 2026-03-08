@@ -31,6 +31,7 @@ CATEGORIES = [
 
 # In-memory store
 submissions: dict[str, list[dict]] = {cat: [] for cat in CATEGORIES}
+visitor_count = 0
 
 
 class SubmissionCreate(BaseModel):
@@ -83,3 +84,11 @@ def create_submission(sub: SubmissionCreate):
     }
     submissions[sub.category].append(entry)
     return entry
+
+
+@app.get("/api/visitors")
+def get_and_increment_visitors():
+    global visitor_count
+    visitor_count += 1
+    return {"count": visitor_count}
+

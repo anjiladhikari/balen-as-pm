@@ -7,6 +7,7 @@ import CATEGORIES from './categories';
 
 export default function App() {
   const [submissions, setSubmissions] = useState({});
+  const [visitors, setVisitors] = useState(0);
 
   const fetchSubmissions = useCallback(async () => {
     try {
@@ -22,6 +23,10 @@ export default function App() {
 
   useEffect(() => {
     fetchSubmissions();
+    fetch('/api/visitors')
+      .then((r) => r.json())
+      .then((d) => setVisitors(d.count))
+      .catch(() => { });
   }, [fetchSubmissions]);
 
   return (
@@ -42,8 +47,17 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-8 text-center text-text-secondary text-sm">
-        <p>Built with ❤️ for Nepal — <span className="text-primary-light font-medium">Balen as PM</span></p>
+      <footer className="border-t border-white/5 py-4 px-4">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <p className="text-text-secondary text-sm">
+            Built with ❤️ for Nepal — <span className="text-primary-light font-medium">Balen as PM</span>
+          </p>
+          <div className="flex items-center gap-1.5 text-sm text-text-secondary">
+            <span>Total Visitors:</span>
+            <span>👥</span>
+            <span>{visitors.toLocaleString()}</span>
+          </div>
+        </div>
       </footer>
     </div>
   );

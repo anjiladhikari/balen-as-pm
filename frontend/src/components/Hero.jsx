@@ -26,7 +26,7 @@ export default function Hero() {
                         />
                     </div>
                     <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg">
-                        🇳🇵 FOR NEPAL
+                         FOR NEPAL
                     </div>
                 </div>
 

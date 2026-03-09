@@ -7,6 +7,7 @@ from typing import Optional
 from datetime import datetime
 from dotenv import load_dotenv
 from groq import Groq
+from supabase import create_client
 
 load_dotenv()
 
@@ -28,6 +29,12 @@ app.add_middleware(
 # Groq client
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+# Supabase client
+supabase = create_client(
+    os.getenv("SUPABASE_URL"),
+    os.getenv("SUPABASE_KEY"),
+)
+
 CATEGORIES = [
     "Finance",
     "Urban Development",
@@ -41,10 +48,6 @@ CATEGORIES = [
     "Culture, Tourism and Civil Aviation",
     "Health and Population",
 ]
-
-# In-memory store
-submissions: dict[str, list[dict]] = {cat: [] for cat in CATEGORIES}
-visitor_count = 0
 
 
 class SubmissionCreate(BaseModel):
@@ -63,15 +66,6 @@ class SubmissionOut(BaseModel):
     category: str
     name: Optional[str] = None
     created_at: str
-
-
-_counter = 0
-
-
-def _next_id():
-    global _counter
-    _counter += 1
-    return _counter
 
 
 def is_english(text: str) -> bool:
@@ -141,45 +135,62 @@ def get_categories():
 
 @app.get("/api/submissions")
 def get_all_submissions():
-    return submissions
+    result = supabase.table("submissions").select("*").order("created_at", desc=True).execute()
+    grouped = {cat: [] for cat in CATEGORIES}
+    for row in result.data:
+        cat = row["category"]
+        if cat in grouped:
+            grouped[cat].append(row)
+    return grouped
 
 
 @app.get("/api/submissions/{category}")
 def get_submissions_by_category(category: str):
-    if category not in submissions:
-        return []
-    return submissions[category]
+    result = (
+        supabase.table("submissions")
+        .select("*")
+        .eq("category", category)
+        .order("created_at", desc=True)
+        .execute()
+    )
+    return result.data
 
 
 @app.post("/api/submissions", response_model=SubmissionOut)
 def create_submission(sub: SubmissionCreate):
-    if sub.category not in submissions:
-        submissions[sub.category] = []
     polished = process_message(sub.message.strip())
     entry = {
-        "id": _next_id(),
         "message": polished,
         "category": sub.category,
         "name": sub.name.strip() if sub.name else None,
         "created_at": datetime.now().isoformat(),
     }
-    submissions[sub.category].append(entry)
-    return entry
+    result = supabase.table("submissions").insert(entry).execute()
+    return result.data[0]
 
 
 @app.put("/api/submissions/{submission_id}", response_model=SubmissionOut)
 def update_submission(submission_id: int, update: SubmissionUpdate):
-    for cat_list in submissions.values():
-        for entry in cat_list:
-            if entry["id"] == submission_id:
-                polished = process_message(update.message.strip())
-                entry["message"] = polished
-                return entry
-    raise HTTPException(status_code=404, detail="Submission not found")
+    polished = process_message(update.message.strip())
+    result = (
+        supabase.table("submissions")
+        .update({"message": polished})
+        .eq("id", submission_id)
+        .execute()
+    )
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    return result.data[0]
 
 
 @app.get("/api/visitors")
 def get_and_increment_visitors():
-    global visitor_count
-    visitor_count += 1
-    return {"count": visitor_count}
+    # Get current count
+    result = supabase.table("visitors").select("count").eq("id", 1).execute()
+    if not result.data:
+        # First time — create the row
+        supabase.table("visitors").insert({"id": 1, "count": 1}).execute()
+        return {"count": 1}
+    new_count = result.data[0]["count"] + 1
+    supabase.table("visitors").update({"count": new_count}).eq("id", 1).execute()
+    return {"count": new_count}

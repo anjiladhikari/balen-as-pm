@@ -11,6 +11,7 @@ export default function App() {
   const [submissions, setSubmissions] = useState({});
   const [visitors, setVisitors] = useState(0);
 
+  
   const fetchSubmissions = useCallback(async () => {
     try {
       const res = await fetch(`${API_URL}/api/submissions`);

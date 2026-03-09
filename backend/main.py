@@ -1,8 +1,9 @@
 import os
 import re
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime
 from dotenv import load_dotenv
 from groq import Groq
@@ -49,12 +50,18 @@ visitor_count = 0
 class SubmissionCreate(BaseModel):
     message: str
     category: str
+    name: Optional[str] = None
+
+
+class SubmissionUpdate(BaseModel):
+    message: str
 
 
 class SubmissionOut(BaseModel):
     id: int
     message: str
     category: str
+    name: Optional[str] = None
     created_at: str
 
 
@@ -153,10 +160,22 @@ def create_submission(sub: SubmissionCreate):
         "id": _next_id(),
         "message": polished,
         "category": sub.category,
+        "name": sub.name.strip() if sub.name else None,
         "created_at": datetime.now().isoformat(),
     }
     submissions[sub.category].append(entry)
     return entry
+
+
+@app.put("/api/submissions/{submission_id}", response_model=SubmissionOut)
+def update_submission(submission_id: int, update: SubmissionUpdate):
+    for cat_list in submissions.values():
+        for entry in cat_list:
+            if entry["id"] == submission_id:
+                polished = process_message(update.message.strip())
+                entry["message"] = polished
+                return entry
+    raise HTTPException(status_code=404, detail="Submission not found")
 
 
 @app.get("/api/visitors")

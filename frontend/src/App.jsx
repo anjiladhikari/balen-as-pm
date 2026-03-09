@@ -44,6 +44,7 @@ export default function App() {
             key={cat.name}
             category={cat}
             submissions={submissions[cat.name] || []}
+            onUpdated={fetchSubmissions}
           />
         ))}
       </div>

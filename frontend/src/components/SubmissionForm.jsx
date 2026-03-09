@@ -5,23 +5,25 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 
 export default function SubmissionForm({ onSubmitted }) {
     const [message, setMessage] = useState('');
+    const [name, setName] = useState('');
     const [category, setCategory] = useState('');
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
-        if (!message.trim()) return;
+        if (!message.trim() || !category) return;
 
         setLoading(true);
         try {
             const res = await fetch(`${API_URL}/api/submissions`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: message.trim(), category }),
+                body: JSON.stringify({ message: message.trim(), category, name: name.trim() || null }),
             });
             if (res.ok) {
                 setMessage('');
+                setName('');
                 setSuccess(true);
                 setTimeout(() => setSuccess(false), 3000);
                 onSubmitted?.();
@@ -81,6 +83,16 @@ export default function SubmissionForm({ onSubmitted }) {
                         ) : (
                             <span className="text-sm text-text-secondary/50 italic">Please select a ministry above</span>
                         )}
+                    </div>
+
+                    {/* Name (optional) */}
+                    <div>
+                        <input
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Your name (optional)"
+                            className="w-full bg-surface-light border border-white/10 rounded-xl px-4 py-3 text-white placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+                        />
                     </div>
 
                     {/* Message */}

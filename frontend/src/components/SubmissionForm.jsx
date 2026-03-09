@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import CATEGORIES from '../categories';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function SubmissionForm({ onSubmitted }) {
     const [message, setMessage] = useState('');
     const [category, setCategory] = useState('');
@@ -13,7 +15,7 @@ export default function SubmissionForm({ onSubmitted }) {
 
         setLoading(true);
         try {
-            const res = await fetch('/api/submissions', {
+            const res = await fetch(`${API_URL}/api/submissions`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: message.trim(), category }),
@@ -59,8 +61,8 @@ export default function SubmissionForm({ onSubmitted }) {
                                     type="button"
                                     onClick={() => setCategory(cat.name)}
                                     className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 cursor-pointer ${category === cat.name
-                                            ? 'bg-primary/20 border-primary text-primary-light shadow-sm shadow-primary/10'
-                                            : 'bg-surface-light border-white/10 text-text-secondary hover:border-white/20 hover:text-white'
+                                        ? 'bg-primary/20 border-primary text-primary-light shadow-sm shadow-primary/10'
+                                        : 'bg-surface-light border-white/10 text-text-secondary hover:border-white/20 hover:text-white'
                                         }`}
                                 >
                                     {cat.icon} {cat.name}

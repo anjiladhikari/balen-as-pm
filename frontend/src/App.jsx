@@ -5,13 +5,15 @@ import SubmissionForm from './components/SubmissionForm';
 import TopicSection from './components/TopicSection';
 import CATEGORIES from './categories';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function App() {
   const [submissions, setSubmissions] = useState({});
   const [visitors, setVisitors] = useState(0);
 
   const fetchSubmissions = useCallback(async () => {
     try {
-      const res = await fetch('/api/submissions');
+      const res = await fetch(`${API_URL}/api/submissions`);
       if (res.ok) {
         const data = await res.json();
         setSubmissions(data);
@@ -23,7 +25,7 @@ export default function App() {
 
   useEffect(() => {
     fetchSubmissions();
-    fetch('/api/visitors')
+    fetch(`${API_URL}/api/visitors`)
       .then((r) => r.json())
       .then((d) => setVisitors(d.count))
       .catch(() => { });

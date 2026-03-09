@@ -5,7 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 
 export default function SubmissionForm({ onSubmitted }) {
     const [message, setMessage] = useState('');
-    const [category, setCategory] = useState(CATEGORIES[0].name);
+    const [category, setCategory] = useState('');
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
@@ -73,8 +73,14 @@ export default function SubmissionForm({ onSubmitted }) {
 
                     {/* Selected category indicator */}
                     <div className="flex items-center gap-2 bg-surface-light/50 rounded-lg px-4 py-2.5">
-                        <span className="text-lg">{selectedCat?.icon}</span>
-                        <span className="text-sm text-primary-light font-medium">{category}</span>
+                        {category ? (
+                            <>
+                                <span className="text-lg">{selectedCat?.icon}</span>
+                                <span className="text-sm text-primary-light font-medium">{category}</span>
+                            </>
+                        ) : (
+                            <span className="text-sm text-text-secondary/50 italic">Please select a ministry above</span>
+                        )}
                     </div>
 
                     {/* Message */}
@@ -92,7 +98,7 @@ export default function SubmissionForm({ onSubmitted }) {
                     {/* Submit */}
                     <button
                         type="submit"
-                        disabled={loading || !message.trim()}
+                        disabled={loading || !message.trim() || !category}
                         className="w-full bg-gradient-to-r from-primary to-primary-dark hover:from-primary-light hover:to-primary text-white font-semibold py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-primary/40 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                     >
                         {loading ? (
